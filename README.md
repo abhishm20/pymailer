@@ -1,6 +1,7 @@
 # pymailer
 A python utility to send mail from gmail using OAuth2.0
 
+### To download [click_here](https://raw.githubusercontent.com/abhishm20/pymailer/master/pymailer.zip)
 
 ### Required libs
 1. to install **httplib2**
