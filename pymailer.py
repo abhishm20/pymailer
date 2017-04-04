@@ -131,17 +131,6 @@ def getopts(argv):
 
 
 if __name__ == '__main__':
-    if not os.path.exists(CREDENTIAL_FILE_PATH):
-        shutil.rmtree(CONF_PATH)
-    if not os.path.exists(SECRET_FILE_PATH):
-        print '%sNo secret file found, please check %s%s' % (colors.ERROR, GITHUB_LINK, colors.END)
-        exit(-1)
-    if not os.path.exists(CONF_PATH):
-        print '%sIt seems you are running it first time%s' % (colors.BOLD, colors.END)
-        print '%sLet\'s just setup things%s\n\n' % (colors.BOLD, colors.END)
-        os.makedirs(CONF_PATH)
-        send(SENDER_EMAIL_ID, 'PyMailer :: setting up', 'Thank you for using PyMailer')
-        exit()
     myargs = getopts(sys.argv)
     email = ''
     subject = ''
@@ -164,6 +153,17 @@ if __name__ == '__main__':
     except Exception as e:
         print "%sError: %s%s" % (colors.ERROR, str(e), colors.END)
         exit()
+
+    if not os.path.exists(CREDENTIAL_FILE_PATH):
+        shutil.rmtree(CONF_PATH)
+    if not os.path.exists(SECRET_FILE_PATH):
+        print '%sNo secret file found, please check %s%s' % (colors.ERROR, GITHUB_LINK, colors.END)
+        exit(-1)
+    if not os.path.exists(CONF_PATH):
+        print '%sIt seems you are running it first time%s' % (colors.BOLD, colors.END)
+        print '%sLet\'s just setup things%s\n\n' % (colors.BOLD, colors.END)
+        os.makedirs(CONF_PATH)
+        send(SENDER_EMAIL_ID, 'PyMailer :: setting up', 'Thank you for using PyMailer')
 
     print "%smail-data: %s %s%s" % (colors.BLUE, email, subject, colors.END)
     send(email, subject, body)
