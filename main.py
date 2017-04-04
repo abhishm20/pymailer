@@ -1,5 +1,7 @@
 import sys
-import gmail
+import pymailer
+import os
+from pymailer import CONF_PATH, CURRENT_DIR
 import constants
 
 
@@ -15,7 +17,7 @@ class ValidationError(Exception):
 # Command line arguments interpreter
 def getopts(argv):
     opts = {}  # Empty dictionary to store key-value pairs.
-    while argv:  # While there are arguments left to parse...
+    while argv: # While there are arguments left to parse...
         if argv[0][0] == '-':  # Found a "-name value" pair.
             opts[argv[0]] = argv[1]  # Add key and value to the dictionary.
         argv = argv[1:]  # Reduce the argument list by copying it starting from index 1.
@@ -23,6 +25,10 @@ def getopts(argv):
 
 
 if __name__ == '__main__':
+    if not os.path.exists(CONF_PATH) or not os.path.exists(CURRENT_DIR):
+        print '%sPlease run setup...%s' % (constants.colors.ERROR, constants.colors.END)
+        exit(-1)
+
     myargs = getopts(sys.argv)
     email = ''
     subject = ''
@@ -31,7 +37,7 @@ if __name__ == '__main__':
         if '-e' in myargs:  # Example usage.
             email = myargs['-e']
         else:
-            raise ValidationError("mail id is required")
+            raise ValidationError("email id is required")
 
         if '-s' in myargs:  # Example usage.
             subject = myargs['-s']
@@ -46,4 +52,5 @@ if __name__ == '__main__':
         print "%sError: %s%s" % (constants.colors.ERROR, str(e), constants.colors.END)
         exit()
 
-    gmail.send(email, subject, body)
+    # pymailer.send('abhishek.sharma@daybox.in', 'hello', 'body')
+    pymailer.send(email, subject, body)

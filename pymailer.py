@@ -4,12 +4,13 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import constants
 
+import argparse
 import httplib2
 import oauth2client
 from apiclient import errors, discovery
 from oauth2client import client, tools
 
-APPLICATION_NAME = 'pygmailer'
+APPLICATION_NAME = 'pymailer'
 
 # Internal constant
 SCOPES = 'https://www.googleapis.com/auth/gmail.send'
@@ -17,45 +18,38 @@ SCOPES = 'https://www.googleapis.com/auth/gmail.send'
 # Home directory
 HOME_DIR = os.path.expanduser('~')
 
+# Current directory
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 # Configuration path (HOME/.pymailer)
 CONF_PATH = os.path.join(HOME_DIR, '.'+APPLICATION_NAME)
-# Credential path (HOME/.pymailer/.credentials)
-CREDENTIAL_PATH = os.path.join(HOME_DIR, '.'+APPLICATION_NAME, '.credentials')
 
-CREDENTIAL_FILE_NAME = 'oauth2.json'
+CREDENTIAL_FILE_NAME = 'credentials.json'
 SECRET_FILE_NAME = "client_secret.json"
 
-SECRET_FILE_PATH = os.path.join(CONF_PATH, SECRET_FILE_NAME)
+SECRET_FILE_PATH = os.path.join(CURRENT_DIR, SECRET_FILE_NAME)
+CREDENTIAL_FILE_PATH = os.path.join(CONF_PATH, CREDENTIAL_FILE_NAME)
 
-SENDER_EMAIL_ID = 'contact@daybox.in'
+SENDER_EMAIL_ID = 'pymailertool@gmail.im'
 
-
-def setup():
-    """
-    Creates required directories 
-    :return: 
-    """
-    if not os.path.exists(CONF_PATH):
-        print '%sCreating: %s%s' % (constants.colors.BOLD, CONF_PATH, constants.colors.END)
-        os.makedirs(CONF_PATH)
-    if not os.path.exists(CREDENTIAL_PATH):
-        print '%sCreating: %s%s' % (constants.colors.BOLD, CREDENTIAL_PATH, constants.colors.END)
-        os.makedirs(CREDENTIAL_PATH)
-    if not os.path.exists(SECRET_FILE_PATH):
-        print '%sNo secret file found, please check %s%shttps://github.com/abhishm20/pymailer%s'\
-              % (constants.colors.ERROR, constants.colors.END, constants.colors.UNDERLINE, constants.colors.END)
-        exit(-1)
+# Github link
+GITHUB_LINK = "https://github.com/abhishm20/pymailer"
 
 
 def _get_credentials():
-    credential_path = os.path.join(CREDENTIAL_PATH, CREDENTIAL_FILE_NAME)
-    store = oauth2client.file.Storage(credential_path)
+    store = oauth2client.file.Storage(CREDENTIAL_FILE_PATH)
     credentials = store.get()
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(SECRET_FILE_PATH, SCOPES)
         flow.user_agent = APPLICATION_NAME
-        credentials = tools.run_flow(flow, store)
-        print '%sStoring credentials to %s%s' % (constants.colors.BOLD, credential_path, constants.colors.END)
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--noauth_local_webserver", default=True)
+        parser.add_argument("--logging_level", default='ERROR')
+        parser.add_argument("--auth_host_name", default='localhost')
+        parser.add_argument("--auth_host_port", default=[8080,8090])
+        flags = parser.parse_args()
+        credentials = tools.run_flow(flow, store, flags=flags)
+        print '%sStoring credentials to %s%s' % (constants.colors.BOLD, CREDENTIAL_FILE_PATH, constants.colors.END)
     return credentials
 
 
@@ -98,7 +92,3 @@ def _send_email(email, subject, body):
 def send(email, subject, body):
     print "%smail-data: %s %s%s" % (constants.colors.BLUE, email, subject, constants.colors.END)
     _send_email(email, subject, body)
-
-
-# Run setup whenever module is loaded
-setup()
