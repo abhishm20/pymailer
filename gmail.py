@@ -36,13 +36,14 @@ def setup():
     :return: 
     """
     if not os.path.exists(CONF_PATH):
-        print '%Creating %s%s' % (constants.colors.BOLD, CONF_PATH, constants.colors.END)
+        print '%sCreating: %s%s' % (constants.colors.BOLD, CONF_PATH, constants.colors.END)
         os.makedirs(CONF_PATH)
     if not os.path.exists(CREDENTIAL_PATH):
-        print '%Creating %s%s' % (constants.colors.BOLD, CREDENTIAL_PATH, constants.colors.END)
+        print '%sCreating: %s%s' % (constants.colors.BOLD, CREDENTIAL_PATH, constants.colors.END)
         os.makedirs(CREDENTIAL_PATH)
     if not os.path.exists(SECRET_FILE_PATH):
-        print '%sNo secret file found, please check %s' % (constants.colors.ERROR, constants.colors.END)
+        print '%sNo secret file found, please check %s%shttps://github.com/abhishm20/pymailer%s'\
+              % (constants.colors.ERROR, constants.colors.END, constants.colors.UNDERLINE, constants.colors.END)
         exit(-1)
 
 
