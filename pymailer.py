@@ -32,7 +32,7 @@ SECRET_FILE_NAME = "client_secret.json"
 SECRET_FILE_PATH = os.path.join(CURRENT_DIR, SECRET_FILE_NAME)
 CREDENTIAL_FILE_PATH = os.path.join(CONF_PATH, CREDENTIAL_FILE_NAME)
 
-SENDER_EMAIL_ID = 'pymailertool@gmail.im'
+SENDER_EMAIL_ID = 'pymailertool@gmail.com'
 
 # Github link
 GITHUB_LINK = "https://github.com/abhishm20/pymailer"
@@ -104,7 +104,6 @@ def _send_email(email, subject, body):
 
 
 def send(email, subject, body):
-    print "%smail-data: %s %s%s" % (colors.BLUE, email, subject, colors.END)
     _send_email(email, subject, body)
 
 
@@ -119,52 +118,46 @@ class ValidationError(Exception):
 
 # Command line arguments interpreter
 def getopts(argv):
-    opts = {}  # Empty dictionary to store key-value pairs.
-    while argv:  # While there are arguments left to parse...
-        if argv[0][0] == '-':  # Found a "-name value" pair.
-            opts[argv[0]] = argv[1]  # Add key and value to the dictionary.
-        argv = argv[1:]  # Reduce the argument list by copying it starting from index 1.
-    return opts
-
-
-def setup():
-    """
-    Creates required directories 
-    :return: 
-    """
-    if os.path.exists(CONF_PATH):
-        shutil.rmtree(CONF_PATH)
-    if not os.path.exists(SECRET_FILE_PATH):
-        print '%sNo secret file found, please check %s%s' \
-              % (colors.ERROR, GITHUB_LINK, colors.END)
+    try:
+        opts = {}
+        while argv:
+            if argv[0][0] == '-':
+                opts[argv[0]] = argv[1]
+            argv = argv[1:]
+        return opts
+    except IndexError:
+        print '%sInvalid argument(s)%s' % (colors.ERROR, colors.END)
         exit(-1)
-    if not os.path.exists(CONF_PATH):
-        print '%sCreating: %s%s' % (colors.BOLD, CONF_PATH, colors.END)
-        os.makedirs(CONF_PATH)
-    send(SENDER_EMAIL_ID, 'PyMailer :: setting up', 'Thank you for using PyMailer')
 
 
 if __name__ == '__main__':
-    if not os.path.exists(CONF_PATH) or not os.path.exists(CURRENT_DIR):
-        print '%sPlease run setup...%s' % (colors.ERROR, colors.END)
+    if not os.path.exists(CREDENTIAL_FILE_PATH):
+        shutil.rmtree(CONF_PATH)
+    if not os.path.exists(SECRET_FILE_PATH):
+        print '%sNo secret file found, please check %s%s' % (colors.ERROR, GITHUB_LINK, colors.END)
         exit(-1)
-
+    if not os.path.exists(CONF_PATH):
+        print '%sIt seems you are running it first time%s' % (colors.BOLD, colors.END)
+        print '%sLet\'s just setup things%s\n\n' % (colors.BOLD, colors.END)
+        os.makedirs(CONF_PATH)
+        send(SENDER_EMAIL_ID, 'PyMailer :: setting up', 'Thank you for using PyMailer')
+        exit()
     myargs = getopts(sys.argv)
     email = ''
     subject = ''
     body = ''
     try:
-        if '-e' in myargs:  # Example usage.
+        if '-e' in myargs:
             email = myargs['-e']
         else:
             raise ValidationError("email id is required")
 
-        if '-s' in myargs:  # Example usage.
+        if '-s' in myargs:
             subject = myargs['-s']
         else:
             raise ValidationError("mail subject is required")
 
-        if '-b' in myargs:  # Example usage.
+        if '-b' in myargs:
             body = myargs['-b']
         else:
             raise ValidationError("mail body is required")
@@ -172,4 +165,5 @@ if __name__ == '__main__':
         print "%sError: %s%s" % (colors.ERROR, str(e), colors.END)
         exit()
 
+    print "%smail-data: %s %s%s" % (colors.BLUE, email, subject, colors.END)
     send(email, subject, body)
