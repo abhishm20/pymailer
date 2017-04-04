@@ -17,17 +17,27 @@ pip install --upgrade google-api-python-client
 ```
 
 ### Setup
-1. goto **pymailer** directory
-
-2. run **setup**
+1. goto **downloads** directory where pymailer is downloaded
 ```bash
-python setup.py
+# e.g. cd ~/Downloads/
 ```
-
-### To send email
-1. goto **pymailer** directory
-
-2. send **email**
+2. move **pymailer** to **home** directory
 ```bash
-python main.py -e test@gmail.com -s subject -b body
+mv -R pymailer ~/
+```
+2. set **pymailer** as variable
+```bash
+printf "export PYMAILER=\"~/home/pymailer/pymailer.py\"" >> ~/.bash_profile
+```
+4. set **alias** to execute as command
+```bash
+printf "alias pymailer='python \$PYMAILER'" >> ~/.bash_profile
+```
+5. load changes
+```bash
+source ~/.bash_profile
+```
+6. test sending a mail
+```bash
+pymailer -e test@gmail.com -s subject -b body
 ```
