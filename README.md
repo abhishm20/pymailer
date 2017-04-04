@@ -20,7 +20,11 @@ printf "alias pymailer='python ~/pymailer/pymailer.py'\n" >> ~/.bash_profile
 ```bash
 source ~/.bash_profile
 ```
-5. test sending a mail
+5. run setup
+```bash
+pymailer --setup
+```
+6. test sending a mail
 ```bash
 pymailer -e your_email@gmail.com -s subject -b body
 ```
