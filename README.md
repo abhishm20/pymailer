@@ -23,15 +23,15 @@ pip install --upgrade google-api-python-client
 ```
 2. move **pymailer** to **home** directory
 ```bash
-mv -R pymailer ~/
+mv pymailer* ~/
 ```
 2. set **pymailer** as variable
 ```bash
-printf "export PYMAILER=\"~/home/pymailer/pymailer.py\"" >> ~/.bash_profile
+printf "export PYMAILER=\"~/pymailer/pymailer.py\"\n" >> ~/.bash_profile
 ```
 4. set **alias** to execute as command
 ```bash
-printf "alias pymailer='python \$PYMAILER'" >> ~/.bash_profile
+printf "alias pymailer='python \$PYMAILER'\n" >> ~/.bash_profile
 ```
 5. load changes
 ```bash
